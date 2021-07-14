@@ -11,7 +11,8 @@ path_to_raw_fastq="$path_to_project""raw_data/CleanFq/"
 path_to_ref="$path_to_project""ref/"
 path_to_bwa_files="$path_to_project""bwa/"
 path_to_picard="/mnt/e/MCL_project/"
-path_to_macs2_files="$path_to_project""macs2/"
+path_to_macs2_files="$path_to_project""macs2_pe/"
+path_to_macs2_files_withdup="$path_to_project""macs2_pe_dup/"
 genome_fa="GCA_000001405.15_GRCh38_no_alt_analysis_set.fna"
 
 BEGINCOMMENT
@@ -59,17 +60,28 @@ for i in $(cat "$path_to_project"fastq_prefixes);do
     echo "Filtering for "${i}" completed! Filtered BAM is saved to" "$path_to_bwa_files"
 done
 
-for i in $(cat "$path_to_project"fastq_prefixes);do
-    run_spp.R -c="$path_to_bwa_files"${i}_sorted_marked_filtered.bam -rf -out="$path_to_bwa_files"${i}_sorted_marked_filtered.phantom.out
-    echo "Fragment size and quality parameters estimated for "${i}" ! Output saved to" ""$path_to_bwa_files"${i}_sorted_marked_filtered.phantom.out"
+#for i in $(cat "$path_to_project"fastq_prefixes);do
+#    run_spp.R -c="$path_to_bwa_files"${i}_sorted_marked_filtered.bam -rf -out="$path_to_bwa_files"${i}_sorted_marked_filtered.phantom.out
+#    echo "Fragment size and quality parameters estimated for "${i}" ! Output saved to" ""$path_to_bwa_files"${i}_sorted_marked_filtered.phantom.out"
+#done
+
+### Peak calling with removed duplicates ###
+
+path_to_macs2_files="$path_to_project""macs2_pe/"
+for i in $(cat "$path_to_project"short_prefixes);do
+    macs2 callpeak -t "$path_to_bwa_files"${i}IP_clean_sorted_marked_filtered.bam \
+                    -c "$path_to_bwa_files"${i}IN_clean_sorted_marked_filtered.bam \
+                    -n ${i} -f BAM -g hs -f BAMPE \
+                    --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_macs2.log &
 done
 
 ENDCOMMENT
 
-path_to_macs2_files="$path_to_project""macs2/"
+### Peak calling with duplicates (for futher differerntial binding analysis)
+
 for i in $(cat "$path_to_project"short_prefixes);do
-    macs2 callpeak -t "$path_to_bwa_files"${i}IP_clean_sorted_marked_filtered.bam \
-                    -c "$path_to_bwa_files"${i}IN_clean_sorted_marked_filtered.bam \
-                    -n ${i} -f BAM -g hs \
-                    --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_macs2.log &
+    macs2 callpeak -t "$path_to_bwa_files"${i}IP_clean_sorted.bam \
+                   -c "$path_to_bwa_files"${i}IN_clean_sorted.bam \
+                   -n ${i} -f BAM -g hs -f BAMPE --keep-dup all\
+                   --outdir "$path_to_macs2_files_withdup" 2> "$path_to_macs2_files_withdup"${i}_macs2.log &
 done
