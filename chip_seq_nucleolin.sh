@@ -14,6 +14,7 @@ path_to_picard="/mnt/e/MCL_project/"
 path_to_macs2_files="$path_to_project""macs2_pe/"
 path_to_macs2_files_withdup="$path_to_project""macs2_pe_dup/"
 path_to_macs2_files_lessstringent="$path_to_project""macs2_lessstringent/"
+path_to_idr="$path_to_project""idr/"
 genome_fa="GCA_000001405.15_GRCh38_no_alt_analysis_set.fna"
 samples=(LCL GRANTA)
 
@@ -105,9 +106,9 @@ for i in ${samples[*]};do
     idr --samples "$path_to_macs2_files_lessstringent"${i}a_peaks_sorted.narrowPeak "$path_to_macs2_files_lessstringent"${i}b_peaks_sorted.narrowPeak \
     --input-file-type narrowPeak \
     --rank p.value \
-    --output-file ${i}_idr \
+    --output-file "$path_to_idr"${i}_idr \
     --plot \
-    --log-output-file ${i}_idr.log &
+    --log-output-file "$path_to_idr"${i}_idr.log &
 done
 
 
