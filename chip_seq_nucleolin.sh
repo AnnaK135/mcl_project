@@ -13,6 +13,7 @@ path_to_bwa_files="$path_to_project""bwa/"
 path_to_picard="/mnt/e/MCL_project/"
 path_to_macs2_files="$path_to_project""macs2_pe/"
 path_to_macs2_files_withdup="$path_to_project""macs2_pe_dup/"
+path_to_macs2_files_lessstringent="$path_to_project""macs2_lessstringent/"
 genome_fa="GCA_000001405.15_GRCh38_no_alt_analysis_set.fna"
 
 BEGINCOMMENT
@@ -71,17 +72,26 @@ path_to_macs2_files="$path_to_project""macs2_pe/"
 for i in $(cat "$path_to_project"short_prefixes);do
     macs2 callpeak -t "$path_to_bwa_files"${i}IP_clean_sorted_marked_filtered.bam \
                     -c "$path_to_bwa_files"${i}IN_clean_sorted_marked_filtered.bam \
-                    -n ${i} -f BAM -g hs -f BAMPE \
+                    -n ${i} -g hs -f BAMPE \
                     --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_macs2.log &
 done
-
-ENDCOMMENT
 
 ### Peak calling with duplicates (for futher differerntial binding analysis)
 
 for i in $(cat "$path_to_project"short_prefixes);do
     macs2 callpeak -t "$path_to_bwa_files"${i}IP_clean_sorted.bam \
                    -c "$path_to_bwa_files"${i}IN_clean_sorted.bam \
-                   -n ${i} -f BAM -g hs -f BAMPE --keep-dup all\
+                   -n ${i} -g hs -f BAMPE --keep-dup all\
                    --outdir "$path_to_macs2_files_withdup" 2> "$path_to_macs2_files_withdup"${i}_macs2.log &
+done
+
+ENDCOMMENT
+
+### Less strigent peak-calling for running IDR on replicates 
+
+for i in $(cat "$path_to_project"short_prefixes);do
+    macs2 callpeak -t "$path_to_bwa_files"${i}IP_clean_sorted_marked_filtered.bam \
+                   -c "$path_to_bwa_files"${i}IN_clean_sorted_marked_filtered.bam \  
+                   -n ${i} -f BAMPE -g hs --pvalue 1e-3 \
+                   --outdir "$path_to_macs2_files_lessstringent" 2> "$path_to_macs2_files_lessstringent"${i}_macs2.log &
 done
