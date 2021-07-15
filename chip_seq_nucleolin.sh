@@ -94,15 +94,13 @@ for i in $(cat "$path_to_project"short_prefixes);do
                    --outdir "$path_to_macs2_files_lessstringent" 2> "$path_to_macs2_files_lessstringent"${i}_macs2.log &
 done
 
-ENDCOMMENT
-
 ### Handling replicates 
 
-for i in $(cat "$path_to_project"short_prefixes);do
+for i in $(cat "$path_to_project"short_prefixes);do    
     sort -k8,8nr "$path_to_macs2_files_lessstringent"${i}_peaks.narrowPeak > "$path_to_macs2_files_lessstringent"${i}_peaks_sorted.narrowPeak &
 done
 
-
+ENDCOMMENT
 
 
 
