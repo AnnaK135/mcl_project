@@ -85,8 +85,6 @@ for i in $(cat "$path_to_project"short_prefixes);do
                    --outdir "$path_to_macs2_files_withdup" 2> "$path_to_macs2_files_withdup"${i}_macs2.log &
 done
 
-ENDCOMMENT
-
 ### Less strigent peak-calling for running IDR on replicates 
 
 for i in $(cat "$path_to_project"short_prefixes);do
@@ -95,3 +93,18 @@ for i in $(cat "$path_to_project"short_prefixes);do
                    -n ${i} -f BAMPE -g hs --pvalue 1e-3 \
                    --outdir "$path_to_macs2_files_lessstringent" 2> "$path_to_macs2_files_lessstringent"${i}_macs2.log &
 done
+
+ENDCOMMENT
+
+### Handling replicates 
+
+for i in $(cat "$path_to_project"short_prefixes);do
+    sort -k8,8nr "$path_to_macs2_files_lessstringent"${i}_peaks.narrowPeak > "$path_to_macs2_files_lessstringent"${i}_peaks_sorted.narrowPeak &
+done
+
+
+
+
+
+
+
