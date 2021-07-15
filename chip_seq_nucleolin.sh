@@ -15,6 +15,7 @@ path_to_macs2_files="$path_to_project""macs2_pe/"
 path_to_macs2_files_withdup="$path_to_project""macs2_pe_dup/"
 path_to_macs2_files_lessstringent="$path_to_project""macs2_lessstringent/"
 genome_fa="GCA_000001405.15_GRCh38_no_alt_analysis_set.fna"
+samples=(LCL GRANTA)
 
 BEGINCOMMENT
 #### Dependencies ###
@@ -22,6 +23,7 @@ BEGINCOMMENT
 #sudo apt install bwa #version 0.7.17 at the moment of execution
 #sudo apt install samtools
 #pip3 install macs2
+#https://github.com/nboley/idr.git - IDR package (to be installed independently from GitHub, version 2.0.3)
 
 #### Getting the fastq prefixes ### 
 ls "$path_to_raw_fastq" | sed -e 's/\_[1,2].fq.gz$//' | uniq > "$path_to_project"fastq_prefixes
@@ -61,12 +63,7 @@ for i in $(cat "$path_to_project"fastq_prefixes);do
     echo "Filtering for "${i}" completed! Filtered BAM is saved to" "$path_to_bwa_files"
 done
 
-#for i in $(cat "$path_to_project"fastq_prefixes);do
-#    run_spp.R -c="$path_to_bwa_files"${i}_sorted_marked_filtered.bam -rf -out="$path_to_bwa_files"${i}_sorted_marked_filtered.phantom.out
-#    echo "Fragment size and quality parameters estimated for "${i}" ! Output saved to" ""$path_to_bwa_files"${i}_sorted_marked_filtered.phantom.out"
-#done
-
-### Peak calling with removed duplicates ###
+### MACS2 peak calling with removed duplicates ###
 
 path_to_macs2_files="$path_to_project""macs2_pe/"
 for i in $(cat "$path_to_project"short_prefixes);do
@@ -76,7 +73,7 @@ for i in $(cat "$path_to_project"short_prefixes);do
                     --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_macs2.log &
 done
 
-### Peak calling with duplicates (for futher differerntial binding analysis)
+### MACS2 Peak calling with duplicates (for differerntial binding analysis) ###
 
 for i in $(cat "$path_to_project"short_prefixes);do
     macs2 callpeak -t "$path_to_bwa_files"${i}IP_clean_sorted.bam \
@@ -85,7 +82,7 @@ for i in $(cat "$path_to_project"short_prefixes);do
                    --outdir "$path_to_macs2_files_withdup" 2> "$path_to_macs2_files_withdup"${i}_macs2.log &
 done
 
-### Less strigent peak-calling for running IDR on replicates 
+### Less strigent MACS2 peak calling for merging replicates with IDR ###
 
 for i in $(cat "$path_to_project"short_prefixes);do
     macs2 callpeak -t "$path_to_bwa_files"${i}IP_clean_sorted_marked_filtered.bam \
@@ -94,7 +91,7 @@ for i in $(cat "$path_to_project"short_prefixes);do
                    --outdir "$path_to_macs2_files_lessstringent" 2> "$path_to_macs2_files_lessstringent"${i}_macs2.log &
 done
 
-### Handling replicates 
+### Sorting non-stringent narrowPeaks by p-value ###
 
 for i in $(cat "$path_to_project"short_prefixes);do    
     sort -k8,8nr "$path_to_macs2_files_lessstringent"${i}_peaks.narrowPeak > "$path_to_macs2_files_lessstringent"${i}_peaks_sorted.narrowPeak &
@@ -102,7 +99,16 @@ done
 
 ENDCOMMENT
 
+### Merging replicates with IDR ###
 
+for i in ${samples[*]};do
+    idr --samples "$path_to_macs2_files_lessstringent"${i}a_peaks_sorted.narrowPeak "$path_to_macs2_files_lessstringent"${i}b_peaks_sorted.narrowPeak \
+    --input-file-type narrowPeak \
+    --rank p.value \
+    --output-file ${i}_idr \
+    --plot \
+    --log-output-file ${i}_idr.log &
+done
 
 
 
