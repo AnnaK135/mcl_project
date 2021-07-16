@@ -111,15 +111,15 @@ done
 
 ENDCOMMENT
 
-### Creating IDR pseudoreplicates for IP ###
+### Creating pseudoreplicates for IP ###
 for i in ${samples[*]};do
-    samtools merge -u "$path_to_bwa_files"${i}_merged.bam "$path_to_bwa_files"${i}aIP_clean_sorted_marked_filtered.bam "$path_to_bwa_files"${i}bIP_clean_sorted_marked_filtered.bam
-    samtools view -H "$path_to_bwa_files"${i}_merged.bam > "$path_to_bwa_files"${i}_merged_header.sam &&
+    samtools merge -u "$path_to_bwa_files"${i}_mergedIP.bam "$path_to_bwa_files"${i}aIP_clean_sorted_marked_filtered.bam "$path_to_bwa_files"${i}bIP_clean_sorted_marked_filtered.bam
+    samtools view -H "$path_to_bwa_files"${i}_mergedIP.bam > "$path_to_bwa_files"${i}_mergedIP_header.sam &&
     nlines=$(samtools view "$path_to_bwa_files"${i}_merged.bam | wc -l ) && # Number of reads in the merged BAM 
     nlines=$(( (nlines + 1) / 2 )) &&  # half that number 
-    samtools view "$path_to_bwa_files"${i}_merged.bam | shuf - | split -d -l ${nlines} "$path_to_bwa_files"${i}_pseudo &&
-    cat "$path_to_bwa_files"${i}_merged_header.sam "$path_to_bwa_files"${i}_pseudo00 | samtools view -bS - > "$path_to_bwa_files"${i}_pseudo00.bam
-    cat "$path_to_bwa_files"${i}_merged_header.sam "$path_to_bwa_files"${i}_pseudo01 | samtools view -bS - > "$path_to_bwa_files"${i}_pseudo01.bam
+    samtools view "$path_to_bwa_files"${i}_mergedIP.bam | shuf - | split -d -l ${nlines} "$path_to_bwa_files"${i}_pseudoIP &&
+    cat "$path_to_bwa_files"${i}_mergedIP_header.sam "$path_to_bwa_files"${i}_pseudoIP00 | samtools view -bS - > "$path_to_bwa_files"${i}_pseudoIP00.bam
+    cat "$path_to_bwa_files"${i}_mergedIP_header.sam "$path_to_bwa_files"${i}_pseudoIP01 | samtools view -bS - > "$path_to_bwa_files"${i}_pseudoIP01.bam
 done
 
 
