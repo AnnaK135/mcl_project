@@ -98,8 +98,6 @@ for i in $(cat "$path_to_project"short_prefixes);do
     sort -k8,8nr "$path_to_macs2_files_lessstringent"${i}_peaks.narrowPeak > "$path_to_macs2_files_lessstringent"${i}_peaks_sorted.narrowPeak &
 done
 
-ENDCOMMENT
-
 ### Merging replicates with IDR ###
 
 for i in ${samples[*]};do
@@ -110,6 +108,8 @@ for i in ${samples[*]};do
     --plot \
     --log-output-file "$path_to_idr"${i}_idr.log &
 done
+
+ENDCOMMENT
 
 ### Creating IDR pseudoreplicates for IP ###
 for i in ${samples[*]};do
