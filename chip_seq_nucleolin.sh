@@ -109,8 +109,6 @@ for i in ${samples[*]};do
     --log-output-file "$path_to_idr"${i}_idr.log &
 done
 
-ENDCOMMENT
-
 ### Creating pseudoreplicates for IP ###
 for i in ${samples[*]};do
     samtools merge -u "$path_to_bwa_files"${i}_mergedIP.bam "$path_to_bwa_files"${i}aIP_clean_sorted_marked_filtered.bam "$path_to_bwa_files"${i}bIP_clean_sorted_marked_filtered.bam
@@ -122,5 +120,45 @@ for i in ${samples[*]};do
     cat "$path_to_bwa_files"${i}_mergedIP_header.sam "$path_to_bwa_files"${i}_pseudoIP01 | samtools view -bS - > "$path_to_bwa_files"${i}_pseudoIP01.bam
 done
 
+ENDCOMMENT
+
+### Creating pseudoreplicates for IN ###
+for i in ${samples[*]};do
+    samtools merge -u "$path_to_bwa_files"${i}_mergedIN.bam "$path_to_bwa_files"${i}aIN_clean_sorted_marked_filtered.bam "$path_to_bwa_files"${i}bIN_clean_sorted_marked_filtered.bam
+    samtools view -H "$path_to_bwa_files"${i}_mergedIN.bam > "$path_to_bwa_files"${i}_mergedIN_header.sam &&
+    nlines=$(samtools view "$path_to_bwa_files"${i}_merged.bam | wc -l ) && # Number of reads in the merged BAM 
+    nlines=$(( (nlines + 1) / 2 )) &&  # half that number 
+    samtools view "$path_to_bwa_files"${i}_mergedIN.bam | shuf - | split -d -l ${nlines} "$path_to_bwa_files"${i}_pseudoIN &&
+    cat "$path_to_bwa_files"${i}_mergedIN_header.sam "$path_to_bwa_files"${i}_pseudoIN00 | samtools view -bS - > "$path_to_bwa_files"${i}_pseudoIN00.bam
+    cat "$path_to_bwa_files"${i}_mergedIN_header.sam "$path_to_bwa_files"${i}_pseudoIN01 | samtools view -bS - > "$path_to_bwa_files"${i}_pseudoIN01.bam
+done
+
+### Peak calling and sorting on pseudoreplicates ###
+
+for i in ${samples[*]};do
+    for k in 00 01;do
+    macs2 callpeak -t "$path_to_bwa_files"${i}_pseudoIP"$k".bam \
+                   -c "$path_to_bwa_files"${i}_pseudoIN"$k".bam \  
+                   -n ${i}_pseudo"$k" -f BAMPE -g hs -p 1e-3 \
+                   --outdir "$path_to_macs2_files_lessstringent" 2> "$path_to_macs2_files_lessstringent"${i}_pseudo"$k"_macs2.log &
+    done
+done
+
+for i in ${samples[*]};do
+    for k in 00 01;do
+    sort -k8,8nr "$path_to_macs2_files_lessstringent"${i}_pseudo"$k"_peaks.narrowPeak > "$path_to_macs2_files_lessstringent"${i}_pseudo"$k"_peaks_sorted.narrowPeak &
+    done
+done
+
+### IDR on pseudoreplicates ###
+
+for i in ${samples[*]};do
+idr --samples "$path_to_macs2_files_lessstringent"${i}_pseudo00_peaks_sorted.narrowPeak "$path_to_macs2_files_lessstringent"${i}${i}_pseudo01_peaks_sorted.narrowPeak \
+    --input-file-type narrowPeak \
+    --rank p.value \
+    --output-file "$path_to_idr"${i}_pseudo_idr \
+    --plot \
+    --log-output-file "$path_to_idr"${i}_pseudo_idr.log &
+done
 
 
