@@ -15,6 +15,7 @@ path_to_macs2_files="$path_to_project""macs2_pe/"
 path_to_macs2_files_withdup="$path_to_project""macs2_pe_dup/"
 path_to_macs2_files_lessstringent="$path_to_project""macs2_lessstringent/"
 path_to_idr="$path_to_project""idr/"
+path_to_bigwig="$path_to_project""bigwigs/"
 genome_fa="GCA_000001405.15_GRCh38_no_alt_analysis_set.fna"
 samples=(LCL GRANTA)
 
