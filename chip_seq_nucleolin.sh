@@ -98,7 +98,7 @@ for i in $(cat "$path_to_project"short_prefixes);do
     sort -k8,8nr "$path_to_macs2_files_lessstringent"${i}_peaks.narrowPeak > "$path_to_macs2_files_lessstringent"${i}_peaks_sorted.narrowPeak &
 done
 
-### Merging replicates with IDR ###
+### Merging replicates with IDR ### 
 
 for i in ${samples[*]};do
     idr --samples "$path_to_macs2_files_lessstringent"${i}a_peaks_sorted.narrowPeak "$path_to_macs2_files_lessstringent"${i}b_peaks_sorted.narrowPeak \
@@ -109,7 +109,7 @@ for i in ${samples[*]};do
     --log-output-file "$path_to_idr"${i}_idr.log &
 done
 
-### Creating pseudoreplicates for IP ###
+### Creating pseudoreplicates for IP ### ---RETRY FROM HERE TILL THE MARK
 for i in ${samples[*]};do
     samtools merge -u "$path_to_bwa_files"${i}_mergedIP.bam "$path_to_bwa_files"${i}aIP_clean_sorted_marked_filtered.bam "$path_to_bwa_files"${i}bIP_clean_sorted_marked_filtered.bam
     samtools view -H "$path_to_bwa_files"${i}_mergedIP.bam > "$path_to_bwa_files"${i}_mergedIP_header.sam &&
@@ -119,8 +119,6 @@ for i in ${samples[*]};do
     cat "$path_to_bwa_files"${i}_mergedIP_header.sam "$path_to_bwa_files"${i}_pseudoIP00 | samtools view -bS - > "$path_to_bwa_files"${i}_pseudoIP00.bam
     cat "$path_to_bwa_files"${i}_mergedIP_header.sam "$path_to_bwa_files"${i}_pseudoIP01 | samtools view -bS - > "$path_to_bwa_files"${i}_pseudoIP01.bam
 done
-
-ENDCOMMENT
 
 ### Creating pseudoreplicates for IN ###
 for i in ${samples[*]};do
@@ -161,4 +159,33 @@ idr --samples "$path_to_macs2_files_lessstringent"${i}_pseudo00_peaks_sorted.nar
     --log-output-file "$path_to_idr"${i}_pseudo_idr.log &
 done
 
+###---THE MARK
+
+ENDCOMMENT
+
+### Creating BigWig files for visualistaion ### 
+
+### bamCompare for each IP-IN pair (normalisation of IP to input)
+for i in $(cat "$path_to_project"short_prefixes);do
+    bamCompare -b1 "$path_to_bwa_files"${i}IP_clean_sorted_marked_duplicates.bam \
+               -b2 "$path_to_bwa_files"${i}IN_clean_sorted_marked_filtered.bam \
+               -o "$path_to_bigwig"${i}_log2ratio.bw \
+               --binSize 10 --normalizeUsing RPKM --smoothLength 30 \
+               --extendReads 150 --centerReads -p max/4 -v >2 "$path_to_bigwig"${i}_log2ratio.log &
+done
+
+### bamCoverage for each file (normalization to sequencing depth)
+for i in $(cat "$path_to_project"short_prefixes);do
+    bamCompare -b "$path_to_bwa_files"${i}IP_clean_sorted_marked_duplicates.bam \
+               -o "$path_to_bigwig"${i}IP_clean_sorted_marked_duplicates_coverage.bw \
+               --binSize 10 --normalizeUsing RPKM --smoothLength 30 \
+               --extendReads 150 --centerReads -p max/4 -v >2 "$path_to_bigwig"${i}IP_coverage.log &
+done
+
+for i in $(cat "$path_to_project"short_prefixes);do
+    bamCompare -b "$path_to_bwa_files"${i}IN_clean_sorted_marked_duplicates.bam \
+               -o "$path_to_bigwig"${i}IN_clean_sorted_marked_duplicates_coverage.bw \
+               --binSize 10 --normalizeUsing RPKM --smoothLength 30 \
+               --extendReads 150 --centerReads -p max/4 -v >2 "$path_to_bigwig"${i}IN_coverage.log &
+done
 
