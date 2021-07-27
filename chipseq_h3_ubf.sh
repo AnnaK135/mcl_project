@@ -20,10 +20,12 @@ path_to_picard="/mnt/e/MCL_project/"
 genome_fa="GCA_000001405.15_GRCh38_no_alt_analysis_set.fna"
 samples=(L1a L2a L3a L1b L2b L3b L1c L2c L3c Linput G1a G2a G3a G1b G2b G3b G1c G2c G3c Ginput)
 
+BEGINCOMMENT 
 ### FastQC quality analysis
 for i in ${samples[*]};do
     fastqc -o "$path_to_raw_fastq""fastqc/" -t 12 "$path_to_raw_fastq""${i}"/*.fq.gz &
 done
+ENDCOMMENT
 
 ### Adapter trimming 
 for i in ${samples[*]};do
