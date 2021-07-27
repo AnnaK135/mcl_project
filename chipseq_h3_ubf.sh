@@ -31,6 +31,6 @@ ENDCOMMENT
 ### Adapter trimming 
 for i in ${samples[*]};do
     "$path_to_bbmap"bbduk.sh in1="$path_to_raw_fastq""${i}"/${i}_1.fq.gz in2="$path_to_raw_fastq""${i}"/${i}_2.fq.gz \
-    out1="$path_to_clean_fastq"${i}_clean_1.fq out2"$path_to_clean_fastq"${i}_clean_2.fq \
+    out1="$path_to_clean_fastq"${i}_clean_1.fq out2="$path_to_clean_fastq"${i}_clean_2.fq \
     ktrim=r k=23 mink=11 hdist=1 tpe tbo &
 done
