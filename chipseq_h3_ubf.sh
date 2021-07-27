@@ -24,3 +24,10 @@ samples=(L1a L2a L3a L1b L2b L3b L1c L2c L3c Linput G1a G2a G3a G1b G2b G3b G1c 
 for i in ${samples[*]};do
     fastqc -o "$path_to_raw_fastq""fastqc/" -t 12 "$path_to_raw_fastq""${i}"/*.fq.gz &
 done
+
+### Adapter trimming 
+for i in ${samples[*]};do
+    bbduk.sh in1="$path_to_raw_fastq""${i}"/${i}_1.fq.gz in2="$path_to_raw_fastq""${i}"/${i}_2.fq.gz \
+    out1="$path_to_clean_fastq"${i}_clean_1.fq out2"$path_to_clean_fastq"${i}_clean_2.fq \
+    ktrim=r k=23 mink=11 hdist=1 tpe tbo &
+done
