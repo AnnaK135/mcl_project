@@ -15,7 +15,7 @@ path_to_macs2_files="$path_to_project""macs2_pe/"
 path_to_macs2_files_withdup="$path_to_project""macs2_pe_dup/"
 path_to_macs2_files_lessstringent="$path_to_project""macs2_lessstringent/"
 path_to_idr="$path_to_project""idr/"
-path_to_bigwig="$path_to_project""bigwigs/"
+path_to_bigwig="$path_to_project""bigwigs_bmp/"
 genome_fa="GCA_000001405.15_GRCh38_no_alt_analysis_set.fna"
 samples=(LCL GRANTA)
 
@@ -162,31 +162,33 @@ done
 
 ###---THE MARK
 
-ENDCOMMENT
-
 ### Creating BigWig files for visualistaion ### 
 
 ### bamCompare for each IP-IN pair (normalisation of IP to input)
 for i in $(cat "$path_to_project"short_prefixes);do
     bamCompare -b1 "$path_to_bwa_files"${i}IP_clean_sorted_marked_duplicates.bam \
-               -b2 "$path_to_bwa_files"${i}IN_clean_sorted_marked_filtered.bam \
+               -b2 "$path_to_bwa_files"${i}IN_clean_sorted_marked_duplicates.bam \
                -o "$path_to_bigwig"${i}_log2ratio.bw \
-               --binSize 10 --normalizeUsing RPKM --smoothLength 30 \
-               --extendReads 150 --centerReads -p 4 -v >2 "$path_to_bigwig"${i}_log2ratio.log &
+               --binSize 10 --normalizeUsing BPM --smoothLength 30 \
+	       --scaleFactorsMethod None \
+               --extendReads 150 --centerReads -p 4 -v 2> "$path_to_bigwig"${i}_log2ratio.log &
 done
+
+ENDCOMMENT
 
 ### bamCoverage for each file (normalization to sequencing depth)
 for i in $(cat "$path_to_project"short_prefixes);do
     bamCoverage -b "$path_to_bwa_files"${i}IP_clean_sorted_marked_duplicates.bam \
-               -o "$path_to_bigwig"${i}IP_clean_sorted_marked_duplicates_coverage.bw \
-               --binSize 10 --normalizeUsing RPKM --smoothLength 30 \
-               --extendReads 150 --centerReads -p 4 -v >2 "$path_to_bigwig"${i}IP_coverage.log &
+                -o "$path_to_bigwig"${i}IP_clean_sorted_marked_duplicates_coverage.bw \
+                --binSize 10 --normalizeUsing BPM --smoothLength 30 \
+                --extendReads 150 --centerReads -p 4 -v 2> "$path_to_bigwig"${i}IP_coverage.log &
 done
 
 for i in $(cat "$path_to_project"short_prefixes);do
     bamCoverage -b "$path_to_bwa_files"${i}IN_clean_sorted_marked_duplicates.bam \
-               -o "$path_to_bigwig"${i}IN_clean_sorted_marked_duplicates_coverage.bw \
-               --binSize 10 --normalizeUsing RPKM --smoothLength 30 \
-               --extendReads 150 --centerReads -p 4 -v >2 "$path_to_bigwig"${i}IN_coverage.log &
+                -o "$path_to_bigwig"${i}IN_clean_sorted_marked_duplicates_coverage.bw \
+                --binSize 10 --normalizeUsing BPM --smoothLength 30 \
+                --extendReads 150 --centerReads -p 4 -v 2> "$path_to_bigwig"${i}IN_coverage.log &
 done
+
 
