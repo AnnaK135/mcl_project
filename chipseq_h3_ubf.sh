@@ -39,7 +39,7 @@ ENDCOMMENT
 ### Alignment with BWA-MEM, stats and sorting
 
 for i in ${samples[*]};do
-    bwa mem -t 20 -M "$path_to_ref""$genome_fa" "$path_to_clean_fastq"${i}_clean_1.fq "$path_to_raw_fastq"${i}_clean_2.fq | samtools view -bS > "$path_to_bwa_files"${i}.bam
+    bwa mem -t 20 -M "$path_to_ref""$genome_fa" "$path_to_clean_fastq"${i}_clean_1.fq "$path_to_clean_fastq"${i}_clean_2.fq | samtools view -bS > "$path_to_bwa_files"${i}.bam
     samtools flagstat "$path_to_bwa_files"${i}.bam > "$path_to_bwa_files"${i}.mapping_stat &
     samtools sort "$path_to_bwa_files"${i}.bam > "$path_to_bwa_files"${i}_sorted.bam & 
 done
