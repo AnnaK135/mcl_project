@@ -26,7 +26,6 @@ BEGINCOMMENT
 for i in ${samples[*]};do
     fastqc -o "$path_to_raw_fastq""fastqc/" -t 12 "$path_to_raw_fastq""${i}"/*.fq.gz &
 done
-ENDCOMMENT
 
 ### Adapter trimming 
 for i in ${samples[*]};do
@@ -34,4 +33,13 @@ for i in ${samples[*]};do
     out1="$path_to_clean_fastq"${i}_clean_1.fq out2="$path_to_clean_fastq"${i}_clean_2.fq \
     ref="$path_to_bbmap"resources/adapters.fa \
     ktrim=r k=23 mink=11 hdist=1 tpe tbo
+done
+ENDCOMMENT
+
+### Alignment with BWA-MEM, stats and sorting
+
+for i in ${samples[*]};do
+    bwa mem -t 20 -M "$path_to_ref""$genome_fa" "$path_to_clean_fastq"${i}_clean_1.fq "$path_to_raw_fastq"${i}_clean_2.fq | samtools view -bS > "$path_to_bwa_files"${i}.bam
+    samtools flagstat "$path_to_bwa_files"${i}.bam > "$path_to_bwa_files"${i}.mapping_stat &
+    samtools sort "$path_to_bwa_files"${i}.bam > "$path_to_bwa_files"${i}_sorted.bam & 
 done
