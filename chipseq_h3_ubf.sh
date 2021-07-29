@@ -34,12 +34,29 @@ for i in ${samples[*]};do
     ref="$path_to_bbmap"resources/adapters.fa \
     ktrim=r k=23 mink=11 hdist=1 tpe tbo
 done
-ENDCOMMENT
 
 ### Alignment with BWA-MEM, stats and sorting
-
 for i in ${samples[*]};do
     bwa mem -t 20 -M "$path_to_ref""$genome_fa" "$path_to_clean_fastq"${i}_clean_1.fq "$path_to_clean_fastq"${i}_clean_2.fq | samtools view -bS > "$path_to_bwa_files"${i}.bam
     samtools flagstat "$path_to_bwa_files"${i}.bam > "$path_to_bwa_files"${i}.mapping_stat &
     samtools sort "$path_to_bwa_files"${i}.bam > "$path_to_bwa_files"${i}_sorted.bam & 
+done
+
+ENDCOMMENT
+
+#### Marking duplicates with Picard ###
+for i in ${samples[*]};do
+    java -jar "$path_to_picard"/picard.jar MarkDuplicates \
+    I="$path_to_bwa_files"${i}_sorted.bam \
+    O="$path_to_bwa_files"${i}_sorted_marked_duplicates.bam\
+    M="$path_to_bwa_files"${i}_sorted_dup_metrics.txt \
+    ASSUME_SORTED=true \
+    VALIDATION_STRINGENCY=SILENT
+done
+
+### Filtering (and indexing for the genome browser) ###
+#filtering unmapped reads and reads (flag 4) with mapping quality < 5 and Picard-Marked duplicates (flag 1024)
+for i in ${samples[*]};do
+    samtools index -b -@ 20 "$path_to_bwa_files"${i}_sorted_marked_duplicates.bam 
+    samtools view -b -F 4 -q 5 -@ 20 "$path_to_bwa_files"${i}_sorted_marked_duplicates.bam | samtools view -b -F 1024 -@ 20 > "$path_to_bwa_files"${i}_sorted_marked_filtered.bam
 done
