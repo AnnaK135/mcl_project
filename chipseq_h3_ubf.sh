@@ -13,16 +13,13 @@ path_to_ref="/mnt/e/MCL_project/chipseq_nucleolin/ref"
 path_to_bwa_files="$path_to_project""bwa/"
 path_to_picard="/mnt/e/MCL_project/"
 path_to_bbmap="/mnt/e/MCL_project/bbmap/"
-#path_to_macs2_files="$path_to_project""macs2_pe/"
-#path_to_macs2_files_withdup="$path_to_project""macs2_pe_dup/" 
-#path_to_macs2_files_lessstringent="$path_to_project""macs2_lessstringent/"
+path_to_macs2_files="$path_to_project""macs2/"
 path_to_idr="$path_to_project""idr/"
 path_to_bigwig="$path_to_project""bigwigs/"
 genome_fa="GCA_000001405.15_GRCh38_no_alt_analysis_set.fna"
 samples=(L1a L2a L3a L1b L2b L3b L1c L2c L3c Linput G1a G2a G3a G1b G2b G3b G1c G2c G3c Ginput)
-#samples=(L1a L2a L3a L1b L2b L3b L1c L2c L3c G2a G3a G1b G2b G3b G1c G2c G3c Ginput)
-
-BEGINCOMMENT
+lcl=(L1a L2a L3a L1b L2b L3b L1c L2c L3c Linput)
+granta=(G1a G2a G3a G1b G2b G3b G1c G2c G3c Ginput)
 
 ### FastQC quality analysis
 for i in ${samples[*]};do
@@ -45,8 +42,6 @@ for i in ${samples[*]};do
     samtools sort "$path_to_bwa_files"${i}.bam > "$path_to_bwa_files"${i}_sorted.bam
 done
 
-ENDCOMMENT
-
 #### Marking duplicates with Picard ###
 for i in ${samples[*]};do
     java -jar "$path_to_picard"/picard.jar MarkDuplicates \
@@ -62,5 +57,56 @@ done
 for i in ${samples[*]};do
     samtools index -b -@ 20 "$path_to_bwa_files"${i}_sorted_marked_duplicates.bam 
     samtools view -b -F 4 -q 5 -@ 20 "$path_to_bwa_files"${i}_sorted_marked_duplicates.bam | samtools view -b -F 1024 -@ 20 > "$path_to_bwa_files"${i}_sorted_marked_filtered.bam
+done
+
+
+ENDCOMMENT
+
+### MACS2 peak calling with removed duplicates ###
+for i in ${lcl[*]};do
+    macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_filtered.bam \
+                   -c "$path_to_bwa_files"Linput_sorted_marked_filtered.bam \
+                   -n ${i}_nodup -g hs -f BAMPE \
+                   --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_nodup_macs2.log &
+done
+
+for i in ${granta[*]};do
+    macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_filtered.bam \
+                   -c "$path_to_bwa_files"Ginput_sorted_marked_filtered.bam \
+                   -n ${i}_nodup -g hs -f BAMPE \
+                   --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_nodup_macs2.log &
+done
+
+### MACS2 Peak calling with duplicates (for differerntial binding analysis) ###
+
+for i in ${lcl[*]};do
+    macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_duplicates.bam \
+                   -c "$path_to_bwa_files"Linput_sorted_marked_duplicates.bam \
+                   -n ${i}_dup -g hs -f BAMPE --keep-dup all\
+                   --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_dup_macs2.log &
+done
+
+for i in ${granta[*]};do
+    macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_duplicates.bam \
+                   -c "$path_to_bwa_files"Ginput_sorted_marked_duplicates.bam \
+                   -n ${i}_dup -g hs -f BAMPE --keep-dup all\
+                   --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_dup_macs2.log &
+done
+
+
+### Less strigent MACS2 peak calling for merging replicates with IDR ###
+
+for i in ${lcl[*]};do
+    macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_filtered.bam \
+                   -c "$path_to_bwa_files"Linput_sorted_marked_filtered.bam \  
+                   -n ${i}_lessstringent -f BAMPE -g hs --pvalue 1e-3 \
+                   --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_lesstringent_macs2.log &
+done
+
+for i in ${granta[*]};do
+    macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_filtered.bam \
+                   -c "$path_to_bwa_files"Ginput_sorted_marked_filtered.bam \  
+                   -n ${i}_lessstringent -f BAMPE -g hs --pvalue 1e-3 \
+                   --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_lesstringent_macs2.log &
 done
 
