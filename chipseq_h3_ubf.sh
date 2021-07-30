@@ -59,52 +59,100 @@ for i in ${samples[*]};do
     samtools view -b -F 4 -q 5 -@ 20 "$path_to_bwa_files"${i}_sorted_marked_duplicates.bam | samtools view -b -F 1024 -@ 20 > "$path_to_bwa_files"${i}_sorted_marked_filtered.bam
 done
 
-ENDCOMMENT
+### Calling narrow peaks (UBF and H3K27Ac, and H3K36me3 to try)
 
 ### MACS2 peak calling with removed duplicates ###
 for i in ${lcl[*]};do
     macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_filtered.bam \
                    -c "$path_to_bwa_files"Linput_sorted_marked_filtered.bam \
-                   -n ${i}_nodup -g hs -f BAMPE \
+                   -n ${i}_nodup -g hs -f BAMPE --fix-bimodel \
                    --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_nodup_macs2.log &
 done
 
 for i in ${granta[*]};do
     macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_filtered.bam \
                    -c "$path_to_bwa_files"Ginput_sorted_marked_filtered.bam \
-                   -n ${i}_nodup -g hs -f BAMPE \
+                   -n ${i}_nodup -g hs -f BAMPE --fix-bimodel\
                    --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_nodup_macs2.log &
 done
 
 ### MACS2 Peak calling with duplicates (for differerntial binding analysis) ###
-
 for i in ${lcl[*]};do
     macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_duplicates.bam \
                    -c "$path_to_bwa_files"Linput_sorted_marked_duplicates.bam \
-                   -n ${i}_dup -g hs -f BAMPE --keep-dup all\
+                   -n ${i}_dup -g hs -f BAMPE --keep-dup all --fix-bimodel\
                    --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_dup_macs2.log &
 done
 
 for i in ${granta[*]};do
     macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_duplicates.bam \
                    -c "$path_to_bwa_files"Ginput_sorted_marked_duplicates.bam \
-                   -n ${i}_dup -g hs -f BAMPE --keep-dup all\
+                   -n ${i}_dup -g hs -f BAMPE --keep-dup all --fix-bimodel\
                    --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_dup_macs2.log &
 done
 
-
 ### Less strigent MACS2 peak calling for merging replicates with IDR ###
-
 for i in ${lcl[*]};do
     macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_filtered.bam \
                    -c "$path_to_bwa_files"Linput_sorted_marked_filtered.bam \  
-                   -n ${i}_lessstringent -f BAMPE -g hs --pvalue 1e-3 \
+                   -n ${i}_lessstringent -f BAMPE -g hs --pvalue 1e-3 --fix-bimodel \
                    --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_lesstringent_macs2.log &
 done
 
 for i in ${granta[*]};do
     macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_filtered.bam \
                    -c "$path_to_bwa_files"Ginput_sorted_marked_filtered.bam \  
-                   -n ${i}_lessstringent -f BAMPE -g hs --pvalue 1e-3 \
+                   -n ${i}_lessstringent -f BAMPE -g hs --pvalue 1e-3 --fix-bimodel\
                    --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_lesstringent_macs2.log &
+done
+ENDCOMMENT
+
+### Calling broad peaks (H3K36me3)
+
+broads_l=(L1c L2c L3c Linput)
+broads_g=(G1c G2c G3c Ginput)
+
+#no duplicates
+for i in ${broads_g[*]};do
+    macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_filtered.bam \
+                   -c "$path_to_bwa_files"Ginput_sorted_marked_filtered.bam \  
+                   -n ${i}_nodup_broad -f BAMPE -g hs --fix-bimodel --broad \
+                   --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_nodup_broad_macs2.log &
+done
+
+for i in ${lcl_g[*]};do
+    macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_duplicates.bam \
+                   -c "$path_to_bwa_files"Linput_sorted_marked_duplicates.bam \  
+                   -n ${i}_nodup_broad -f BAMPE -g hs --fix-bimodel --broad \
+                   --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_nodup_broad_macs2.log &
+done
+
+#duplicates
+for i in ${broads_g[*]};do
+    macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_duplicates.bam \
+                   -c "$path_to_bwa_files"Ginput_sorted_marked_duplicates.bam \  
+                   -n ${i}_dup_broad -f BAMPE -g hs --fix-bimodel --broad \
+                   --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_dup_broad_macs2.log &
+done
+
+for i in ${lcl_g[*]};do
+    macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_duplicates.bam \
+                   -c "$path_to_bwa_files"Linput_sorted_marked_duplicates.bam \  
+                   -n ${i}_dup_broad -f BAMPE -g hs --fix-bimodel --broad \
+                   --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_dup_broad_macs2.log &
+done
+
+#less stringent
+for i in ${broads_g[*]};do
+    macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_filtered.bam \
+                   -c "$path_to_bwa_files"Ginput_sorted_marked_filtered.bam \  
+                   -n ${i}_lessstringent_broad -f BAMPE -g hs --pvalue 1e-3 --fix-bimodel --broad \
+                   --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_lesstringent_broad_macs2.log &
+done
+
+for i in ${lcl_g[*]};do
+    macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_filtered.bam \
+                   -c "$path_to_bwa_files"Linput_sorted_marked_filtered.bam \  
+                   -n ${i}_lessstringent_broad -f BAMPE -g hs --pvalue 1e-3 --fix-bimodel --broad \
+                   --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_lesstringent_broad_macs2.log &
 done
