@@ -21,6 +21,7 @@ samples=(L1a L2a L3a L1b L2b L3b L1c L2c L3c Linput G1a G2a G3a G1b G2b G3b G1c 
 lcl=(L1a L2a L3a L1b L2b L3b L1c L2c L3c Linput)
 granta=(G1a G2a G3a G1b G2b G3b G1c G2c G3c Ginput)
 
+BEGINCOMMENT
 ### FastQC quality analysis
 for i in ${samples[*]};do
     fastqc -o "$path_to_raw_fastq""fastqc/" -t 12 "$path_to_raw_fastq""${i}"/*.fq.gz &
@@ -59,24 +60,24 @@ for i in ${samples[*]};do
     samtools view -b -F 4 -q 5 -@ 20 "$path_to_bwa_files"${i}_sorted_marked_duplicates.bam | samtools view -b -F 1024 -@ 20 > "$path_to_bwa_files"${i}_sorted_marked_filtered.bam
 done
 
-
 ENDCOMMENT
 
 ### MACS2 peak calling with removed duplicates ###
 for i in ${lcl[*]};do
     macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_filtered.bam \
-                   -c "$path_to_bwa_files"Linput_sorted_marked_filtered.bam \
-                   -n ${i}_nodup -g hs -f BAMPE \
+                   -c "$path_to_bwa_files"Linput_sorted_marked_filtered.bam -f BAMPE \
+                   -n ${i}_nodup -g hs --fix-bimodal \
                    --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_nodup_macs2.log &
 done
 
 for i in ${granta[*]};do
     macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_filtered.bam \
-                   -c "$path_to_bwa_files"Ginput_sorted_marked_filtered.bam \
-                   -n ${i}_nodup -g hs -f BAMPE \
+                   -c "$path_to_bwa_files"Ginput_sorted_marked_filtered.bam -f BAMPE\
+                   -n ${i}_nodup -g hs --fix-bimodal \
                    --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_nodup_macs2.log &
 done
 
+BEGINCOMMENT
 ### MACS2 Peak calling with duplicates (for differerntial binding analysis) ###
 
 for i in ${lcl[*]};do
@@ -110,3 +111,4 @@ for i in ${granta[*]};do
                    --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_lesstringent_macs2.log &
 done
 
+ENDCOMMENT
