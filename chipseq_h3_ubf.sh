@@ -164,8 +164,6 @@ for i in ${samples[*]};do
     sort -k8,8nr "$path_to_macs2_files"${i}_lessstringent_peaks.narrowPeak > "$path_to_macs2_files"${i}_lesstringent_peaks_sorted.narrowPeak
 done
 
-ENDCOMMENT
-
 ### bamCompare for each IP-IN pair (normalisation of IP to input)
 for i in ${lcl[*]};do
     bamCompare -b1 "$path_to_bwa_files"${i}_sorted_marked_duplicates.bam \
@@ -193,3 +191,35 @@ for i in ${samples[*]};do
                 --extendReads 150 --centerReads -p 4 -v 2> "$path_to_bigwig"${i}_coverage.log &
 done
 
+ENDCOMMENT
+
+### Merging replicates with IDR ### 
+## for narrow peaks (UBF, H3K27Ac)
+
+idr --samples "$path_to_macs2_files"L1a_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"L2a_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"L3a_lessstringent_peaks_sorted.narrowPeak \
+    --input-file-type narrowPeak \
+    --rank p.value \
+    --output-file "$path_to_idr"LCL_UBF_idr \
+    --plot \
+    --log-output-file "$path_to_idr"LCL_UBF_idr.log
+
+idr --samples "$path_to_macs2_files"G1a_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"G2a_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"G3a_lessstringent_peaks_sorted.narrowPeak \
+    --input-file-type narrowPeak \
+    --rank p.value \
+    --output-file "$path_to_idr"GRANTA_UBF_idr \
+    --plot \
+    --log-output-file "$path_to_idr"GRANTA_UBF_idr.log
+
+idr --samples "$path_to_macs2_files"L1b_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"L2b_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"L3b_lessstringent_peaks_sorted.narrowPeak \
+    --input-file-type narrowPeak \
+    --rank p.value \
+    --output-file "$path_to_idr"LCL_H3K27Ac_idr \
+    --plot \
+    --log-output-file "$path_to_idr"LCL_H3K27Ac_idr.log
+
+idr --samples "$path_to_macs2_files"G1b_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"G2b_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"G3b_lessstringent_peaks_sorted.narrowPeak \
+    --input-file-type narrowPeak \
+    --rank p.value \
+    --output-file "$path_to_idr"GRANTA_H3K27Ac_idr \
+    --plot \
+    --log-output-file "$path_to_idr"GRANTA_H3K27Ac_idr.log
