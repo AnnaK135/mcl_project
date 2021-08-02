@@ -168,7 +168,7 @@ ENDCOMMENT
 
 ### bamCompare for each IP-IN pair (normalisation of IP to input)
 for i in ${lcl[*]};do
-    bamCompare -t "$path_to_bwa_files"${i}_sorted_marked_duplicates.bam \
+    bamCompare -b1 "$path_to_bwa_files"${i}_sorted_marked_duplicates.bam \
                -b2 "$path_to_bwa_files"Linput_sorted_marked_duplicates.bam \
                -o "$path_to_bigwig"${i}_log2ratio.bw \
                --binSize 10 --normalizeUsing BPM --smoothLength 30 \
@@ -177,7 +177,7 @@ for i in ${lcl[*]};do
 done
 
 for i in ${granta[*]};do
-    bamCompare -t "$path_to_bwa_files"${i}_sorted_marked_duplicates.bam \
+    bamCompare -b1 "$path_to_bwa_files"${i}_sorted_marked_duplicates.bam \
                -b2 "$path_to_bwa_files"Ginput_sorted_marked_duplicates.bam \
                -o "$path_to_bigwig"${i}_log2ratio.bw \
                --binSize 10 --normalizeUsing BPM --smoothLength 30 \
@@ -187,9 +187,9 @@ done
 
 ### bamCoverage for each file (normalization to sequencing depth)
 for i in ${samples[*]};do
-    bamCoverage -b "$path_to_bwa_files"${i}IP_clean_sorted_marked_duplicates.bam \
-                -o "$path_to_bigwig"${i}IP_clean_sorted_marked_duplicates_coverage.bw \
+    bamCoverage -b "$path_to_bwa_files"${i}_sorted_marked_duplicates.bam \
+                -o "$path_to_bigwig"${i}_sorted_marked_duplicates_coverage.bw \
                 --binSize 10 --normalizeUsing BPM --smoothLength 30 \
-                --extendReads 150 --centerReads -p 4 -v 2> "$path_to_bigwig"${i}coverage.log &
+                --extendReads 150 --centerReads -p 4 -v 2> "$path_to_bigwig"${i}_coverage.log &
 done
 
