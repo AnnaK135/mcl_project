@@ -191,8 +191,6 @@ for i in ${samples[*]};do
                 --extendReads 150 --centerReads -p 4 -v 2> "$path_to_bigwig"${i}_coverage.log &
 done
 
-ENDCOMMENT
-
 ### Merging replicates with IDR ### 
 ## for narrow peaks (UBF, H3K27Ac)
 
@@ -223,3 +221,25 @@ idr --samples "$path_to_macs2_files"G1b_lessstringent_peaks_sorted.narrowPeak "$
     --output-file "$path_to_idr"GRANTA_H3K27Ac12_idr \
     --plot \
     --log-output-file "$path_to_idr"GRANTA_H3K27Ac12_idr.log
+
+ENDCOMMENT
+
+### Sorting non-stringent broadPeaks by p-value ###
+for i in ${samples[*]};do    
+    sort -k8,8nr "$path_to_macs2_files_lessstringent"${i}_lessstringent_peaks.broadPeak > "$path_to_macs2_files_lessstringent"${i}_lessstringent_peaks_sorted.broadPeak &
+done
+
+### Merging broad peaks with IDR
+idr --samples "$path_to_macs2_files"L1c_lessstringent_peaks_sorted.broadPeak "$path_to_macs2_files"L2c_lessstringent_peaks_sorted.broadPeak \
+    --input-file-type broadPeak \
+    --rank p.value \
+    --output-file "$path_to_idr"LCL_H3K36me12_idr \
+    --plot \
+    --log-output-file "$path_to_idr"LCL_H3K36me12_idr.log
+
+idr --samples "$path_to_macs2_files"G1c_lessstringent_peaks_sorted.broadPeak "$path_to_macs2_files"G3c_lessstringent_peaks_sorted.broadPeak \
+    --input-file-type broadPeak \
+    --rank p.value \
+    --output-file "$path_to_idr"GRANTA_H3K36me13_idr \
+    --plot \
+    --log-output-file "$path_to_idr"GRANTA_H3K36me13_idr.log
