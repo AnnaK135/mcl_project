@@ -196,30 +196,30 @@ ENDCOMMENT
 ### Merging replicates with IDR ### 
 ## for narrow peaks (UBF, H3K27Ac)
 
-idr --samples "$path_to_macs2_files"L1a_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"L2a_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"L3a_lessstringent_peaks_sorted.narrowPeak \
+idr --samples "$path_to_macs2_files"L1a_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"L2a_lessstringent_peaks_sorted.narrowPeak \
     --input-file-type narrowPeak \
     --rank p.value \
-    --output-file "$path_to_idr"LCL_UBF_idr \
+    --output-file "$path_to_idr"LCL_UBF12_idr \
     --plot \
-    --log-output-file "$path_to_idr"LCL_UBF_idr.log
+    --log-output-file "$path_to_idr"LCL_UBF12_idr.log
 
-idr --samples "$path_to_macs2_files"G1a_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"G2a_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"G3a_lessstringent_peaks_sorted.narrowPeak \
+idr --samples "$path_to_macs2_files"G1a_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"G2a_lessstringent_peaks_sorted.narrowPeak \
     --input-file-type narrowPeak \
     --rank p.value \
-    --output-file "$path_to_idr"GRANTA_UBF_idr \
+    --output-file "$path_to_idr"GRANTA_UBF12_idr \
     --plot \
-    --log-output-file "$path_to_idr"GRANTA_UBF_idr.log
+    --log-output-file "$path_to_idr"GRANTA_UBF12_idr.log
 
-idr --samples "$path_to_macs2_files"L1b_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"L2b_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"L3b_lessstringent_peaks_sorted.narrowPeak \
+idr --samples "$path_to_macs2_files"L1b_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"L2b_lessstringent_peaks_sorted.narrowPeak \
     --input-file-type narrowPeak \
     --rank p.value \
-    --output-file "$path_to_idr"LCL_H3K27Ac_idr \
+    --output-file "$path_to_idr"LCL_H3K27Ac12_idr \
     --plot \
-    --log-output-file "$path_to_idr"LCL_H3K27Ac_idr.log
+    --log-output-file "$path_to_idr"LCL_H3K27Ac12_idr.log
 
-idr --samples "$path_to_macs2_files"G1b_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"G2b_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"G3b_lessstringent_peaks_sorted.narrowPeak \
+idr --samples "$path_to_macs2_files"G1b_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"G2b_lessstringent_peaks_sorted.narrowPeak \
     --input-file-type narrowPeak \
     --rank p.value \
-    --output-file "$path_to_idr"GRANTA_H3K27Ac_idr \
+    --output-file "$path_to_idr"GRANTA_H3K27Ac12_idr \
     --plot \
-    --log-output-file "$path_to_idr"GRANTA_H3K27Ac_idr.log
+    --log-output-file "$path_to_idr"GRANTA_H3K27Ac12_idr.log
