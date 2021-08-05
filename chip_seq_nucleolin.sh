@@ -174,8 +174,6 @@ for i in $(cat "$path_to_project"short_prefixes);do
                --extendReads 150 --centerReads -p 4 -v 2> "$path_to_bigwig"${i}_log2ratio.log &
 done
 
-ENDCOMMENT
-
 ### bamCoverage for each file (normalization to sequencing depth)
 for i in $(cat "$path_to_project"short_prefixes);do
     bamCoverage -b "$path_to_bwa_files"${i}IP_clean_sorted_marked_duplicates.bam \
@@ -191,4 +189,4 @@ for i in $(cat "$path_to_project"short_prefixes);do
                 --extendReads 150 --centerReads -p 4 -v 2> "$path_to_bigwig"${i}IN_coverage.log &
 done
 
-
+ENDCOMMENT
