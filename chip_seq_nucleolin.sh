@@ -190,3 +190,29 @@ for i in $(cat "$path_to_project"short_prefixes);do
 done
 
 ENDCOMMENT
+
+### Creating score matrices for chr11, chr14 and all chromosomes.
+
+computeMatrix reference-point --referencePoint TSS \
+    -b 5000 -a 5000 \
+    -R "$path_to_ref"refseq_chr11_genes.bed \
+    -S "$path_to_bigwig"*.bw \
+    --skipZeros -p 6 \
+    -o "$path_to_project"matrix/matrix_nuc_chr11_tss.gz
+    --outFileSortedRegions "$path_to_project"matrix/nuc_chr11_tss.bed
+
+computeMatrix reference-point --referencePoint TSS \
+    -b 5000 -a 5000 \
+    -R "$path_to_ref"refseq_chr14_genes.bed \
+    -S "$path_to_bigwig"*.bw \
+    --skipZeros -p 6 \
+    -o "$path_to_project"matrix/matrix_nuc_chr14_tss.gz
+    --outFileSortedRegions "$path_to_project"matrix/nuc_chr14_tss.bed 
+
+computeMatrix reference-point --referencePoint TSS \
+    -b 5000 -a 5000 \
+    -R "$path_to_ref"refseq_all_genes.bed \
+    -S "$path_to_bigwig"*.bw \
+    --skipZeros -p 6 \
+    -o "$path_to_project"matrix/matrix_nuc_all_tss.gz
+    --outFileSortedRegions "$path_to_project"matrix/nuc_all_tss.bed 
