@@ -15,6 +15,7 @@ path_to_picard="/mnt/e/MCL_project/"
 path_to_bbmap="/mnt/e/MCL_project/bbmap/"
 path_to_macs2_files="$path_to_project""macs2/"
 path_to_idr="$path_to_project""idr/"
+path_to_chipr="$path_to_project""chipr/"
 path_to_bigwig="$path_to_project""bigwigs/"
 genome_fa="GCA_000001405.15_GRCh38_no_alt_analysis_set.fna"
 samples=(L1a L2a L3a L1b L2b L3b L1c L2c L3c Linput G1a G2a G3a G1b G2b G3b G1c G2c G3c Ginput)
@@ -242,3 +243,24 @@ idr --samples "$path_to_macs2_files"G1c_lessstringent_peaks_sorted.broadPeak "$p
     --plot \
     --log-output-file "$path_to_idr"GRANTA_H3K36me13_idr.log
 ENDCOMMENT
+
+
+### Merging replicates with ChIP-R
+
+chipr -i "$path_to_macs2_files"L1a_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"L2a_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"L3a_lessstringent_peaks_sorted.narrowPeak \
+        -m 2 -o LCL_UBF_chipr
+
+chipr -i "$path_to_macs2_files"G1a_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"G2a_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"G3a_lessstringent_peaks_sorted.narrowPeak \
+        -m 2 -o GRANTA_UBF_chipr
+
+chipr -i "$path_to_macs2_files"L1b_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"L2b_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"L3b_lessstringent_peaks_sorted.narrowPeak \
+        -m 2 -o LCL_H3K27Ac_chipr
+
+chipr -i "$path_to_macs2_files"G1b_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"G2b_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"G3b_lessstringent_peaks_sorted.narrowPeak \
+        -m 2 -o GRANTA_H3K27Ac_chipr
+
+chipr -i "$path_to_macs2_files"L1c_lessstringent_peaks_sorted.broadPeak "$path_to_macs2_files"L2c_lessstringent_peaks_sorted.broadPeak "$path_to_macs2_files"L3c_lessstringent_peaks_sorted.broadPeak \
+        -m 2 -o LCL_H3K36me13_chipr
+
+chipr -i "$path_to_macs2_files"G1c_lessstringent_peaks.narrowPeak "$path_to_macs2_files"G2c_lessstringent_peaks.narrowPeak "$path_to_macs2_files"G3c_lessstringent_peaks.narrowPeak \
+        -m 2 -o GRANTA_H3K36me13_chipr
