@@ -189,8 +189,6 @@ for i in $(cat "$path_to_project"short_prefixes);do
                 --extendReads 150 --centerReads -p 4 -v 2> "$path_to_bigwig"${i}IN_coverage.log &
 done
 
-ENDCOMMENT
-
 ### Creating score matrices for chr11, chr14 and all chromosomes.
 
 computeMatrix reference-point --referencePoint TSS \
@@ -216,3 +214,4 @@ computeMatrix reference-point --referencePoint TSS \
     --skipZeros -p 6 \
     -o "$path_to_project"matrix/matrix_nuc_all_tss.gz
     --outFileSortedRegions "$path_to_project"matrix/nuc_all_tss.bed 
+ENDCOMMENT
