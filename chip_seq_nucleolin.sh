@@ -215,7 +215,6 @@ computeMatrix reference-point --referencePoint TSS \
     --skipZeros -p 6 \
     -o "$path_to_project"matrix/matrix_nuc_all_tss.gz
     --outFileSortedRegions "$path_to_project"matrix/nuc_all_tss.bed 
-ENDCOMMENT
 
 ### Preparing files for motif analysis
 
@@ -226,8 +225,8 @@ for i in ${samples[*]};do
     cut -f 1,2,3 "$path_to_idr"${i}_idr.bed > "$path_to_meme"${i}_idr_simple.bed &
 done
 
+ENDCOMMENT
+
 for i in ${samples[*]};do 
-    bedtools getfasta -fi "$path_to_ref""$genome_fa"
-        -bed "$path_to_meme"${i}_idr_simple.bed
-        -fo "$path_to_meme"${i}_idr_dreme.fasta
+    bedtools getfasta -fi "$path_to_ref""$genome_fa" -bed "$path_to_meme"${i}_idr_simple.bed -fo "$path_to_meme"${i}_idr_dreme.fasta
 done
