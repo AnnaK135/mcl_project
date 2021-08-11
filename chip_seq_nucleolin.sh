@@ -16,6 +16,7 @@ path_to_macs2_files_withdup="$path_to_project""macs2_pe_dup/"
 path_to_macs2_files_lessstringent="$path_to_project""macs2_lessstringent/"
 path_to_idr="$path_to_project""idr/"
 path_to_bigwig="$path_to_project""bigwigs_bmp/"
+path_to_meme="$path_to_project""meme/"
 genome_fa="GCA_000001405.15_GRCh38_no_alt_analysis_set.fna"
 samples=(LCL GRANTA)
 
@@ -215,3 +216,18 @@ computeMatrix reference-point --referencePoint TSS \
     -o "$path_to_project"matrix/matrix_nuc_all_tss.gz
     --outFileSortedRegions "$path_to_project"matrix/nuc_all_tss.bed 
 ENDCOMMENT
+
+### Preparing files for motif analysis
+
+#extracting first three columns
+path_to_meme="$path_to_project""meme/"
+
+for i in ${samples[*]};do    
+    cut -f 1,2,3 "$path_to_idr"${i}_idr.bed > "$path_to_meme"${i}_idr_simple.bed &
+done
+
+for i in ${samples[*]};do 
+    bedtools getfasta -fi "$path_to_ref""$genome_fa"
+        -bed "$path_to_meme"${i}_idr_simple.bed
+        -fo "$path_to_meme"${i}_idr_dreme.fasta
+done
