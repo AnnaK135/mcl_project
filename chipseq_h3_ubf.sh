@@ -265,3 +265,85 @@ chipr -i "$path_to_macs2_files"G1c_lessstringent_peaks.narrowPeak "$path_to_macs
 
 ENDCOMMENT
 
+### Creating score matrices for chr11, chr14 and all chromosomes. UBF
+
+computeMatrix reference-point --referencePoint TSS \
+    -b 5000 -a 5000 \
+    -R "$path_to_ref"refseq_chr11_genes.bed \
+    -S "$path_to_bigwig"ubf/*.bw \
+    --skipZeros -p 6 \
+    -o "$path_to_project"matrix/matrix_ubf_chr11_tss.gz
+    --outFileSortedRegions "$path_to_project"matrix/ubf_chr11_tss.bed &
+
+computeMatrix reference-point --referencePoint TSS \
+    -b 5000 -a 5000 \
+    -R "$path_to_ref"refseq_chr14_genes.bed \
+    -S "$path_to_bigwig"ubf/*.bw \
+    --skipZeros -p 6 \
+    -o "$path_to_project"matrix/matrix_ubf_chr14_tss.gz
+    --outFileSortedRegions "$path_to_project"matrix/ubf_chr14_tss.bed &
+
+computeMatrix reference-point --referencePoint TSS \
+    -b 5000 -a 5000 \
+    -R "$path_to_ref"refseq_all_genes.bed \
+    -S "$path_to_bigwig"ubf/*.bw \
+    --skipZeros -p 6 \
+    -o "$path_to_project"matrix/matrix_ubf_all_tss.gz
+    --outFileSortedRegions "$path_to_project"matrix/ubf_all_tss.bed &
+
+
+### Creating score matrices for chr11, chr14 and all chromosomes. H3K27Ac
+
+computeMatrix reference-point --referencePoint TSS \
+    -b 5000 -a 5000 \
+    -R "$path_to_ref"refseq_chr11_genes.bed \
+    -S "$path_to_bigwig"h3k27ac/*.bw \
+    --skipZeros -p 6 \
+    -o "$path_to_project"matrix/matrix_h3k27ac_chr11_tss.gz
+    --outFileSortedRegions "$path_to_project"matrix/h3k27ac_chr11_tss.bed &
+
+computeMatrix reference-point --referencePoint TSS \
+    -b 5000 -a 5000 \
+    -R "$path_to_ref"refseq_chr14_genes.bed \
+    -S "$path_to_bigwig"h3k27ac/*.bw \
+    --skipZeros -p 6 \
+    -o "$path_to_project"matrix/matrix_h3k27ac_chr14_tss.gz
+    --outFileSortedRegions "$path_to_project"matrix/h3k27ac_chr14_tss.bed &
+
+computeMatrix reference-point --referencePoint TSS \
+    -b 5000 -a 5000 \
+    -R "$path_to_ref"refseq_all_genes.bed \
+    -S "$path_to_bigwig"h3k27ac/*.bw \
+    --skipZeros -p 6 \
+    -o "$path_to_project"matrix/matrix_h3k27ac_all_tss.gz
+    --outFileSortedRegions "$path_to_project"matrix/h3k27ac_all_tss.bed &
+
+
+### Creating score matrices for chr11, chr14 and all chromosomes. H3K36me3
+
+computeMatrix reference-point --referencePoint TSS \
+    -b 5000 -a 5000 \
+    -R "$path_to_ref"refseq_chr11_genes.bed \
+    -S "$path_to_bigwig"h3k36me3/*.bw \
+    --skipZeros -p 6 \
+    -o "$path_to_project"matrix/matrix_h3k36me3_chr11_tss.gz
+    --outFileSortedRegions "$path_to_project"matrix/h3k36me3_chr11_tss.bed &
+
+computeMatrix reference-point --referencePoint TSS \
+    -b 5000 -a 5000 \
+    -R "$path_to_ref"refseq_chr14_genes.bed \
+    -S "$path_to_bigwig"h3k36me3/*.bw \
+    --skipZeros -p 6 \
+    -o "$path_to_project"matrix/matrix_h3k36me3_chr14_tss.gz
+    --outFileSortedRegions "$path_to_project"matrix/h3k36me3_chr14_tss.bed &
+
+computeMatrix reference-point --referencePoint TSS \
+    -b 5000 -a 5000 \
+    -R "$path_to_ref"refseq_all_genes.bed \
+    -S "$path_to_bigwig"h3k36me3/*.bw \
+    --skipZeros -p 6 \
+    -o "$path_to_project"matrix/matrix_h3k36me3_all_tss.gz
+    --outFileSortedRegions "$path_to_project"matrix/h3k36me3_all_tss.bed &
+
+
+
