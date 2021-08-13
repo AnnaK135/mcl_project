@@ -242,25 +242,26 @@ idr --samples "$path_to_macs2_files"G1c_lessstringent_peaks_sorted.broadPeak "$p
     --output-file "$path_to_idr"GRANTA_H3K36me13_idr \
     --plot \
     --log-output-file "$path_to_idr"GRANTA_H3K36me13_idr.log
-ENDCOMMENT
-
 
 ### Merging replicates with ChIP-R
 
-chipr -i "$path_to_macs2_files"L1a_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"L2a_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"L3a_lessstringent_peaks_sorted.narrowPeak \
-        -m 2 -o LCL_UBF_chipr
+chipr -i "$path_to_macs2_files"L1a_lesstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"L2a_lesstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"L3a_lesstringent_peaks_sorted.narrowPeak \
+        -m 2 -o "$_path_to_chipr"LCL_UBF_chipr &
 
-chipr -i "$path_to_macs2_files"G1a_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"G2a_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"G3a_lessstringent_peaks_sorted.narrowPeak \
-        -m 2 -o GRANTA_UBF_chipr
+chipr -i "$path_to_macs2_files"G1a_lesstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"G2a_lesstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"G3a_lesstringent_peaks_sorted.narrowPeak \
+        -m 2 -o "$_path_to_chipr"GRANTA_UBF_chipr &
 
-chipr -i "$path_to_macs2_files"L1b_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"L2b_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"L3b_lessstringent_peaks_sorted.narrowPeak \
-        -m 2 -o LCL_H3K27Ac_chipr
+chipr -i "$path_to_macs2_files"L1b_lesstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"L2b_lesstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"L3b_lesstringent_peaks_sorted.narrowPeak \
+        -m 2 -o "$_path_to_chipr"LCL_H3K27Ac_chipr &
 
-chipr -i "$path_to_macs2_files"G1b_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"G2b_lessstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"G3b_lessstringent_peaks_sorted.narrowPeak \
-        -m 2 -o GRANTA_H3K27Ac_chipr
+chipr -i "$path_to_macs2_files"G1b_lesstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"G2b_lesstringent_peaks_sorted.narrowPeak "$path_to_macs2_files"G3b_lesstringent_peaks_sorted.narrowPeak \
+        -m 2 -o "$_path_to_chipr"GRANTA_H3K27Ac_chipr &
 
 chipr -i "$path_to_macs2_files"L1c_lessstringent_peaks_sorted.broadPeak "$path_to_macs2_files"L2c_lessstringent_peaks_sorted.broadPeak "$path_to_macs2_files"L3c_lessstringent_peaks_sorted.broadPeak \
-        -m 2 -o LCL_H3K36me13_chipr
+        -m 2 -o "$_path_to_chipr"LCL_H3K36me13_chipr &
 
 chipr -i "$path_to_macs2_files"G1c_lessstringent_peaks.narrowPeak "$path_to_macs2_files"G2c_lessstringent_peaks.narrowPeak "$path_to_macs2_files"G3c_lessstringent_peaks.narrowPeak \
-        -m 2 -o GRANTA_H3K36me13_chipr
+        -m 2 -o "$_path_to_chipr"GRANTA_H3K36me13_chipr &
+
+ENDCOMMENT
+
