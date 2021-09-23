@@ -122,7 +122,7 @@ for i in ${broads_g[*]};do
                    --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_nodup_broad_macs2.log 
 done
 
-for i in ${lcl_g[*]};do
+for i in ${broads_l[*]};do
     macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_duplicates.bam \
                    -c "$path_to_bwa_files"Linput_sorted_marked_duplicates.bam \  
                    -n ${i}_nodup_broad -f BAMPE -g hs --fix-bimodal --broad \
@@ -137,7 +137,7 @@ for i in ${broads_g[*]};do
                    --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_dup_broad_macs2.log 
 done
 
-for i in ${lcl_g[*]};do
+for i in ${broads_l[*]};do
     macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_duplicates.bam \
                    -c "$path_to_bwa_files"Linput_sorted_marked_duplicates.bam \  
                    -n ${i}_dup_broad -f BAMPE -g hs --fix-bimodel --broad \
@@ -152,12 +152,66 @@ for i in ${broads_g[*]};do
                    --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_lesstringent_broad_macs2.log 
 done
 
-for i in ${lcl_g[*]};do
+for i in ${broads_l[*]};do
     macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_filtered.bam \
                    -c "$path_to_bwa_files"Linput_sorted_marked_filtered.bam \  
                    -n ${i}_lessstringent_broad -f BAMPE -g hs --pvalue 1e-3 --fix-bimodal --broad \
                    --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_lesstringent_broad_macs2.log 
 done
+
+ENDCOMMENT
+
+### Calling broad peaks (H3K27Ac)
+
+broads_la=(L1b L2b L3b Linput)
+broads_ga=(G1b G2b G3b Ginput)
+
+#no duplicates
+for i in ${broads_ga[*]};do
+    macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_filtered.bam \
+                   -c "$path_to_bwa_files"Ginput_sorted_marked_filtered.bam \  
+                   -n ${i}_nodup_broad -f BAMPE -g hs --fix-bimodal --broad \
+                   --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_nodup_broad_macs2.log 
+done
+
+for i in ${broads_la[*]};do
+    macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_duplicates.bam \
+                   -c "$path_to_bwa_files"Linput_sorted_marked_duplicates.bam \  
+                   -n ${i}_nodup_broad -f BAMPE -g hs --fix-bimodal --broad \
+                   --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_nodup_broad_macs2.log 
+done
+
+#duplicates
+for i in ${broads_ga[*]};do
+    macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_duplicates.bam \
+                   -c "$path_to_bwa_files"Ginput_sorted_marked_duplicates.bam \  
+                   -n ${i}_dup_broad -f BAMPE -g hs --fix-bimodal --broad \
+                   --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_dup_broad_macs2.log 
+done
+
+for i in ${broads_la[*]};do
+    macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_duplicates.bam \
+                   -c "$path_to_bwa_files"Linput_sorted_marked_duplicates.bam \  
+                   -n ${i}_dup_broad -f BAMPE -g hs --fix-bimodel --broad \
+                   --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_dup_broad_macs2.log
+done
+
+#less stringent
+for i in ${broads_ga[*]};do
+    macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_filtered.bam \
+                   -c "$path_to_bwa_files"Ginput_sorted_marked_filtered.bam \  
+                   -n ${i}_lessstringent_broad -f BAMPE -g hs --pvalue 1e-3 --fix-bimodal --broad \
+                   --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_lesstringent_broad_macs2.log 
+done
+
+for i in ${broads_la[*]};do
+    macs2 callpeak -t "$path_to_bwa_files"${i}_sorted_marked_filtered.bam \
+                   -c "$path_to_bwa_files"Linput_sorted_marked_filtered.bam \  
+                   -n ${i}_lessstringent_broad -f BAMPE -g hs --pvalue 1e-3 --fix-bimodal --broad \
+                   --outdir "$path_to_macs2_files" 2> "$path_to_macs2_files"${i}_lesstringent_broad_macs2.log 
+done
+
+BEGINCOMMENT
 
 ### Sorting non-stringent narrowPeaks by p-value ###
 
@@ -263,10 +317,7 @@ chipr -i "$path_to_macs2_files"L1c_lessstringent_peaks_sorted.broadPeak "$path_t
 chipr -i "$path_to_macs2_files"G1c_lessstringent_peaks.narrowPeak "$path_to_macs2_files"G2c_lessstringent_peaks.narrowPeak "$path_to_macs2_files"G3c_lessstringent_peaks.narrowPeak \
         -m 2 -o "$_path_to_chipr"GRANTA_H3K36me13_chipr &
 
-ENDCOMMENT
-
 ### Creating score matrices for chr11, chr14 and all chromosomes. UBF
-
 computeMatrix reference-point --referencePoint TSS \
     -b 5000 -a 5000 \
     -R "$path_to_ref"refseq_chr11_genes.bed \
@@ -318,7 +369,6 @@ computeMatrix reference-point --referencePoint TSS \
     -o "$path_to_project"matrix/matrix_h3k27ac_all_tss.gz
     --outFileSortedRegions "$path_to_project"matrix/h3k27ac_all_tss.bed &
 
-
 ### Creating score matrices for chr11, chr14 and all chromosomes. H3K36me3
 
 computeMatrix reference-point --referencePoint TSS \
@@ -346,4 +396,5 @@ computeMatrix reference-point --referencePoint TSS \
     --outFileSortedRegions "$path_to_project"matrix/h3k36me3_all_tss.bed &
 
 
+ENDCOMMENT
 
