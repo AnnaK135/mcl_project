@@ -18,12 +18,12 @@ granta=(G1b G2b G3b)
 ### Overlapping enhancer sets for GRANTA and control
 ## for ChIPenrich  
 # regular subtraction
-bedtools subtract -a "$path_to_chipr"GRANTA_H3K27Ac_broad_chipr_all.bed -b "$path_to_chipr"LCL_H3K27Ac_broad_chipr_all.bed > "$path_to_chipr"granta_unique_H3K27Ac.bed
-bedtools subtract -a "$path_to_chipr"LCL_H3K27Ac_broad_chipr_all.bed -b "$path_to_chipr"GRANTA_H3K27Ac_broad_chipr_all.bed > "$path_to_chipr"lcl_unique_H3K27Ac.bed
+bedtools subtract -a "$path_to_chipr"GRANTA_H3K27Ac_chipr_all.bed -b "$path_to_chipr"LCL_H3K27Ac_chipr_all.bed > "$path_to_chipr"granta_unique_H3K27Ac.bed
+bedtools subtract -a "$path_to_chipr"LCL_H3K27Ac_chipr_all.bed -b "$path_to_chipr"GRANTA_H3K27Ac_chipr_all.bed > "$path_to_chipr"lcl_unique_H3K27Ac.bed
 
 # another option to compare: removing the whole feature if any overlap (-A)
-bedtools subtract -A -a "$path_to_chipr"GRANTA_H3K27Ac_broad_chipr_all.bed -b "$path_to_chipr"LCL_H3K27Ac_broad_chipr_all.bed > "$path_to_chipr"granta_unique_H3K27Ac.bed
-bedtools subtract -A -a "$path_to_chipr"LCL_H3K27Ac_broad_chipr_all.bed -b "$path_to_chipr"GRANTA_H3K27Ac_broad_chipr_all.bed > "$path_to_chipr"lcl_unique_H3K27Ac.bed
+bedtools subtract -A -a "$path_to_chipr"GRANTA_H3K27Ac_chipr_all.bed -b "$path_to_chipr"LCL_H3K27Ac_chipr_all.bed > "$path_to_chipr"granta_unique_H3K27Ac.bed
+bedtools subtract -A -a "$path_to_chipr"LCL_H3K27Ac_chipr_all.bed -b "$path_to_chipr"GRANTA_H3K27Ac_chipr_all.bed > "$path_to_chipr"lcl_unique_H3K27Ac.bed
 
 # filtering out the small regions < 10 bp
 awk '($3-$2) >= 10' "$path_to_chipr"granta_unique_H3K27Ac.bed > "$path_to_chipr"granta_unique_H3K27Ac_filtered10.bed
