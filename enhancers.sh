@@ -29,5 +29,10 @@ bedtools subtract -A -a "$path_to_chipr"LCL_H3K27Ac_broad_chipr_all.bed -b "$pat
 awk '($3-$2) >= 10' "$path_to_chipr"granta_unique_H3K27Ac.bed > "$path_to_chipr"granta_unique_H3K27Ac_filtered10.bed
 awk '($3-$2) >= 10' "$path_to_chipr"lcl_unique_H3K27Ac.bed > "$path_to_chipr"lcl_unique_H3K27Ac_filtered10.bed
 
+# selecting chr11 and chr14
+awk '($1) == chr11' "$path_to_chipr"granta_unique_H3K27Ac_filtered10.bed > "$path_to_chipr"granta_unique_H3K27Ac_filtered10_chr11.bed
+awk '($1) == chr14' "$path_to_chipr"granta_unique_H3K27Ac_filtered10.bed > "$path_to_chipr"granta_unique_H3K27Ac_filtered10_chr14.bed
+awk '($1) == chr11' "$path_to_chipr"lcl_unique_H3K27Ac_filtered10.bed > "$path_to_chipr"lcl_unique_H3K27Ac_filtered10_chr11.bed
+awk '($1) == chr14' "$path_to_chipr"lcl_unique_H3K27Ac_filtered10.bed > "$path_to_chipr"lcl_unique_H3K27Ac_filtered10_chr14.bed
 
-### Overlapping super-enhancer sets for GRANTA and control 
+ 
