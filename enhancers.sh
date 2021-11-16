@@ -10,7 +10,7 @@ path_to_ref="$path_to_project""ref/"
 path_to_bwa_files="$path_to_project""bwa/"
 path_to_rose_files="$path_to_project""rose/"
 path_to_chipr="$path_to_project""chipr/"
-path_to_diffbind = "$path_to_project""diffbind_h3k27ac/results/"
+path_to_diffbind="$path_to_project""diffbind_h3k27ac/results/"
 
 samples=(L1b L2b L3b Linput G1b G2b G3b Ginput)
 lcl=(L1b L2b L3b)
