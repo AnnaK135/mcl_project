@@ -20,6 +20,9 @@ granta=(G1b G2b G3b)
 # regular subtraction
 bedtools subtract -a "$path_to_chipr"GRANTA_H3K27Ac_broad_chipr_all.bed -b "$path_to_chipr"LCL_H3K27Ac_broad_chipr_all.bed > "$path_to_chipr"granta_unique_H3K27Ac.bed
 bedtools subtract -a "$path_to_chipr"LCL_H3K27Ac_broad_chipr_all.bed -b "$path_to_chipr"GRANTA_H3K27Ac_broad_chipr_all.bed > "$path_to_chipr"lcl_unique_H3K27Ac.bed
+awk '($3-$2) >= 10' "$path_to_chipr"granta_unique_H3K27Ac.bed > "$path_to_chipr"granta_unique_H3K27Ac_filtered10.bed
+awk '($3-$2) >= 10' "$path_to_chipr"lcl_unique_H3K27Ac.bed > "$path_to_chipr"lcl_unique_H3K27Ac_filtered10.bed
+
 # removing the whole feature if any overlap (-A)
 bedtools subtract -A -a "$path_to_chipr"GRANTA_H3K27Ac_broad_chipr_all.bed -b "$path_to_chipr"LCL_H3K27Ac_broad_chipr_all.bed > "$path_to_chipr"granta_unique_H3K27Ac.bed
 bedtools subtract -A -a "$path_to_chipr"LCL_H3K27Ac_broad_chipr_all.bed -b "$path_to_chipr"GRANTA_H3K27Ac_broad_chipr_all.bed > "$path_to_chipr"lcl_unique_H3K27Ac.bed
@@ -28,6 +31,9 @@ bedtools subtract -A -a "$path_to_chipr"LCL_H3K27Ac_broad_chipr_all.bed -b "$pat
 # regular subtraction
 bedtools subtract -a "$path_to_rose_files"GRANTA_H3K27Ac_chipr_all.gff -b "$path_to_rose_files"LCL_H3K27Ac_chipr_all.gff > "$path_to_rose_files"granta_unique_H3K27Ac.gff
 bedtools subtract -a "$path_to_rose_files"LCL_H3K27Ac_chipr_all.gff -b "$path_to_rose_files"GRANTA_H3K27Ac_chipr_all.gff > "$path_to_rose_files"lcl_unique_H3K27Ac.gff
+awk '($3-$2) >= 10' "$path_to_rose_files"granta_unique_H3K27Ac.gff > "$path_to_rose_files"granta_unique_H3K27Ac_filtered10.gff
+awk '($3-$2) >= 10' "$path_to_rose_files"lcl_unique_H3K27Ac.gff > "$path_to_rose_files"lcl_unique_H3K27Ac_filtered10.gff
+
 # removing the whole feature if any overlap (-A)
 bedtools subtract -A -a "$path_to_rose_files"GRANTA_H3K27Ac_chipr_all.gff -b "$path_to_rose_files"LCL_H3K27Ac_chipr_all.gff > "$path_to_rose_files"granta_unique_H3K27Ac_stringent.gff
 bedtools subtract -A -a "$path_to_rose_files"LCL_H3K27Ac_chipr_all.gff -b "$path_to_rose_files"GRANTA_H3K27Ac_chipr_all.gff > "$path_to_rose_files"lcl_unique_H3K27Ac_stringent.gff
