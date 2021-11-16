@@ -44,6 +44,6 @@ computeMatrix reference-point --referencePoint center \
    -R "$path_to_diffbind"diffenriched_h3k27ac.bed \
    -S "$path_to_bigwig"*.bw \
    --skipZeros -p 6 \
-   -o "$path_to_project"matrix/matrix_diffenriched_h3k27ac_centered.gz
+   -o "$path_to_project"matrix/matrix_diffenriched_h3k27ac_centered.gz \
    --outFileSortedRegions "$path_to_project"matrix/matrix_diffenriched_h3k27ac_centered.bed
  
