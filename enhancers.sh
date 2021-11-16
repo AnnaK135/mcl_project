@@ -17,10 +17,10 @@ granta=(G1b G2b G3b)
 ### Overlapping enhancer sets for GRANTA and control
 
 # regular subtraction
-bedtools subtract -a "$path_to_chipr"GRANTA_H3K27Ac_chipr_all.gff -b "$path_to_chipr"LCL_H3K27Ac_chipr_all.gff > granta_unique_H3K27Ac.gff
-bedtools subtract -a "$path_to_chipr"LCL_H3K27Ac_chipr_all.gff -b "$path_to_chipr"GRANTA_H3K27Ac_chipr_all.gff > granta_unique_H3K27Ac.gff
+bedtools subtract -a "$path_to_rose_files"GRANTA_H3K27Ac_chipr_all.gff -b "$path_to_rose_files"LCL_H3K27Ac_chipr_all.gff > "$path_to_rose_files"granta_unique_H3K27Ac.gff
+bedtools subtract -a "$path_to_rose_files"LCL_H3K27Ac_chipr_all.gff -b "$path_to_rose_files"GRANTA_H3K27Ac_chipr_all.gff > "$path_to_rose_files"lcl_unique_H3K27Ac.gff
 # removing the whole feature if any overlap (-A)
-bedtools subtract -A -a "$path_to_chipr"GRANTA_H3K27Ac_chipr_all.gff -b "$path_to_chipr"LCL_H3K27Ac_chipr_all.gff > granta_unique_H3K27Ac_stringent.gff
-bedtools subtract -A -a "$path_to_chipr"LCL_H3K27Ac_chipr_all.gff -b "$path_to_chipr"GRANTA_H3K27Ac_chipr_all.gff > granta_unique_H3K27Ac_stringent.gff
+bedtools subtract -A -a "$path_to_rose_files"GRANTA_H3K27Ac_chipr_all.gff -b "$path_to_rose_files"LCL_H3K27Ac_chipr_all.gff > "$path_to_rose_files"granta_unique_H3K27Ac_stringent.gff
+bedtools subtract -A -a "$path_to_rose_files"LCL_H3K27Ac_chipr_all.gff -b "$path_to_rose_files"GRANTA_H3K27Ac_chipr_all.gff > "$path_to_rose_files"lcl_unique_H3K27Ac_stringent.gff
 
 ### Overlapping super-enhancer sets for GRANTA and control 
