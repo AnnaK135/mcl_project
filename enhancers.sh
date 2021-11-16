@@ -10,11 +10,13 @@ path_to_ref="$path_to_project""ref/"
 path_to_bwa_files="$path_to_project""bwa/"
 path_to_rose_files="$path_to_project""rose/"
 path_to_chipr="$path_to_project""chipr/"
+path_to_diffbind = "$path_to_project""diffbind_h3k27ac/results/"
 
 samples=(L1b L2b L3b Linput G1b G2b G3b Ginput)
 lcl=(L1b L2b L3b)
 granta=(G1b G2b G3b)
 
+BEGINCOMMENT
 ### Overlapping enhancer sets for GRANTA and control
 ## for ChIPenrich  
 # regular subtraction
@@ -35,4 +37,13 @@ awk '($1) == "chr14"' "$path_to_chipr"granta_unique_H3K27Ac_filtered10.bed > "$p
 awk '($1) == "chr11"' "$path_to_chipr"lcl_unique_H3K27Ac_filtered10.bed > "$path_to_chipr"lcl_unique_H3K27Ac_filtered10_chr11.bed
 awk '($1) == "chr14"' "$path_to_chipr"lcl_unique_H3K27Ac_filtered10.bed > "$path_to_chipr"lcl_unique_H3K27Ac_filtered10_chr14.bed
 
+ENDCOMMENT
+### Computing the matrix for the differentially h3k27ac enriched regions  
+computeMatrix reference-point --referencePoint center \
+   -b 3000 -a 3000 \
+   -R "$path_to_diffbind"diffenriched_h3k27ac.bed \
+   -S "$path_to_bigwig"*.bw \
+   --skipZeros -p 6 \
+   -o "$path_to_project"matrix/matrix_diffenriched_h3k27ac_centered.gz
+   --outFileSortedRegions "$path_to_project"matrix/matrix_diffenriched_h3k27ac_centered.bed
  
