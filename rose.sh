@@ -20,7 +20,6 @@ BEGINCOMMENT
 for i in ${samples[*]};do
     samtools index -b -@ 20 "$path_to_bwa_files"${i}_sorted_marked_filtered.bam &
 done
-ENDCOMMENT
 
 ### Calling superenhancers with ROSE ### 
 cd "$path_to_tools"rose
@@ -32,9 +31,16 @@ for i in ${lcl[*]};do
                                 -c "$path_to_bwa_files"Linput_sorted_marked_duplicates.bam &
 done
 
+cd "$path_to_tools"rose
 for i in ${granta[*]};do
     python ROSE_main.py -g hg38 -i "$path_to_rose_files"GRANTA_H3K27Ac_chipr_all.gff \
                                 -r "$path_to_bwa_files"${i}_sorted_marked_filtered.bam \
                                 -o "$path_to_rose_files"rose_output_${i} -t 2500 \
                                 -c "$path_to_bwa_files"Ginput_sorted_marked_duplicates.bam &
 done
+ENDCOMMENT
+
+chipr -i "$path_to_rose_files"rose_output_G1b/GRANTA_H3K27Ac_chipr_all_Gateway_SuperEnhancers.bed \
+         "$path_to_rose_files"rose_output_G2b/GRANTA_H3K27Ac_chipr_all_Gateway_SuperEnhancers.bed \
+         "$path_to_rose_files"rose_output_G3b/GRANTA_H3K27Ac_chipr_all_Gateway_SuperEnhancers.bed \
+          -m 2 -o "$path_to_rose_files"GRANTA_SEs_chipr 

@@ -18,8 +18,7 @@ path_to_idr="$path_to_project""idr/"
 path_to_chipr="$path_to_project""chipr/"
 path_to_bigwig="$path_to_project""bigwigs/"
 genome_fa="GCA_000001405.15_GRCh38_no_alt_analysis_set.fna"
-samples=(L1a L2a L3a L1b L2b L3b L1c L2c L3c Linput G1a G2a G3a G1b G2b G3b G1c G2c G3c Ginput)
-lcl=(L1a L2a L3a L1b L2b L3b L1c L2c L3c Linput)
+rose.lcl=(L1a L2a L3a L1b L2b L3b L1c L2c L3c Linput)
 granta=(G1a G2a G3a G1b G2b G3b G1c G2c G3c Ginput)
 
 BEGINCOMMENT
