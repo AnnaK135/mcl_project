@@ -17,6 +17,8 @@ path_to_macs2_files_lessstringent="$path_to_project""macs2_lessstringent/"
 path_to_idr="$path_to_project""idr/"
 path_to_bigwig="$path_to_project""bigwigs_bmp/"
 path_to_meme="$path_to_project""meme/"
+path_to_diff_peaks="$path_to_project""diffbind/results/beds/"
+path_to_deseq="$path_to_project""deseq/"
 genome_fa="GCA_000001405.15_GRCh38_no_alt_analysis_set.fna"
 samples=(LCL GRANTA)
 
@@ -225,8 +227,15 @@ for i in ${samples[*]};do
     cut -f 1,2,3 "$path_to_idr"${i}_idr.bed > "$path_to_meme"${i}_idr_simple.bed &
 done
 
-ENDCOMMENT
-
 for i in ${samples[*]};do 
     bedtools getfasta -fi "$path_to_ref""$genome_fa" -bed "$path_to_meme"${i}_idr_simple.bed -fo "$path_to_meme"${i}_idr_dreme.fasta
 done
+ENDCOMMENT
+
+### Assigning nuleolin peaks upregulated in GRANTA to genes using Binding and Expression Target Analysis (BETA)
+
+BETA plus -p "$path_to_diffbind"diffenriched_nucleolin_up.bed --diff_expr "$path_to_deseq"genexpr_granta_names.txt --kind BSF -g hg38 \
+	      --gs "$path_to_ref""$genome_fa" --da 1000 --gname2 -o "$path_to_project""beta/enhancers" --df 0.05 -c 0.5
+
+
+
